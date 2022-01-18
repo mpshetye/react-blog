@@ -1,19 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BlogList from "./BlogList";
 
 const Home = () => {
-    const [blogs, setBlogs] = useState([
-        { title: 'My new website', body: 'lorem ipsum...', author: 'mario', id: 1 },
-        { title: 'Welcome party!', body: 'lorem ipsum...', author: 'yoshi', id: 2 },
-        { title: 'Web dev top tips', body: 'lorem ipsum...', author: 'mario', id: 3 }
-      ])
+    const [blogs, setBlogs] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        fetch('http://localhost:8000/blogs').then(res => res.json).then(data =>{
+            setLoading(false);
+            setBlogs(data);
+        }).catch(err => console.log(err));
+        }
+    , []);
     return (
         <div className="home">
-            <BlogList blogs={blogs} title="All Blogs"/>
-            <BlogList blogs={blogs.filter(blog => blog.author === 'mario')} title="Mario's Blogs"/>
+            {loading && <div>Loading...</div>}
+            {blogs && <BlogList blogs={blogs}/>}
+            
         </div>
     );
 }
  
 export default Home;
-
