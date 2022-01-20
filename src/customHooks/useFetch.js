@@ -6,7 +6,8 @@ const useFetch = (url) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch(url)
+    const abortConst = new AbortController();
+    fetch(url, {signal: abortConst.signal})
       .then((res) => {
         //error coming back from server due to resource not existing
         if (!res.ok) {
@@ -20,10 +21,16 @@ const useFetch = (url) => {
         setError(null);
       })
       .catch((err) => {
-        // auto catches network/connection error
+        if(err.name === 'AbortError'){
+          console.log('fetch is aborted');
+        }
+        else{
+          // auto catches network/connection error
         setLoading(false);
         setError(err.message);
+        }
       });
+      return () => abortConst.abort();
   }, [url]);
   return { loading, data, error };
 };
