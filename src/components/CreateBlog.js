@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
 export default function CreateBlog() {
   const [title, setTitle] = useState("");
@@ -6,6 +7,7 @@ export default function CreateBlog() {
   const [author, setAuthor] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const history = useHistory();
 
   const handleSubmit = async (e) => {
     setLoading(true);
@@ -22,6 +24,7 @@ export default function CreateBlog() {
         throw Error(`an error has occurred: ${res.status} ${res.statusText}`);
       } else {
         setLoading(false);
+        history.push('/');
       }
     } catch (err) {
       console.log(err);
